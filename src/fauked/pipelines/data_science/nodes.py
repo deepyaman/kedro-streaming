@@ -29,3 +29,40 @@
 This is a boilerplate pipeline 'data_science'
 generated using Kedro 0.17.0
 """
+
+import logging
+from typing import Any, Dict
+
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+
+def train_model(
+    train_x: pd.DataFrame, train_y: pd.DataFrame, parameters: Dict[str, Any]
+) -> LogisticRegression:
+    """Node for training a simple logistic regression model.
+    All of the data will be provided to this function at the time of execution.
+    """
+    model = LogisticRegression()
+    model.fit(train_x, train_y.values.ravel())
+    return model
+
+
+def predict(model: LogisticRegression, test_x: pd.DataFrame) -> np.ndarray:
+    """Node for making predictions given a pre-trained model and a test set.
+    """
+    pred_y = model.predict(test_x)
+    return pred_y
+
+
+def report_accuracy(pred_y: np.ndarray, test_y: pd.DataFrame) -> None:
+    """Node for reporting the accuracy of the predictions performed by the
+    previous node. Notice that this function has no outputs, except logging.
+    """
+    # Calculate accuracy of predictions
+    accuracy = accuracy_score(test_y, pred_y)
+    # Log the accuracy of the model
+    log = logging.getLogger(__name__)
+    log.info("Model accuracy on test set: %0.2f%%", accuracy * 100)
