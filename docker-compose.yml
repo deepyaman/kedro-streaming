@@ -1,4 +1,11 @@
 version: "3.7"
+
+networks:
+  fauked_kafka:
+    name: fauked_kafka
+  fauked_mlflow:
+    name: fauked_mlflow
+
 services:
   s3:
     image: minio/minio
@@ -14,18 +21,19 @@ services:
         - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
     command: minio server /data
     networks:
-        - mlflow
+        - fauked_mlflow
     healthcheck:
         test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
         interval: 30s
         timeout: 20s
         retries: 3
+
   db:
     image: mysql
     container_name: db
     command: --innodb_use_native_aio=0
     networks:
-        - mlflow
+        - fauked_mlflow
     ports:
       - "3306:3306"
     environment:
@@ -35,6 +43,7 @@ services:
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     # volumes:
     #     - ./dbdata:/var/lib/mysql
+
   mlflow:
     restart: always
     build: .
@@ -43,7 +52,7 @@ services:
     ports:
         - "5000:5000"
     networks:
-        - mlflow
+        - fauked_mlflow
     environment:
         - MLFLOW_S3_ENDPOINT_URL=http://s3:9000
         - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
@@ -53,48 +62,38 @@ services:
         - db
 
   zookeeper:
-    image: confluentinc/cp-zookeeper
-    hostname: zookeeper
+    image: confluentinc/cp-zookeeper:5.5.0
     container_name: zookeeper
-    ports:
-      - '2181:2181'
     networks:
-      - kafka
+      - fauked_kafka
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
-  kafka:
-    image: confluentinc/cp-kafka
-    hostname: kafka
-    container_name: kafka
-    ports:
-      - '9092:9092'
+  broker:
+    image: confluentinc/cp-kafka:5.5.0
+    container_name: broker
     networks:
-      - kafka
+      - fauked_kafka
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   kafka-create-topics:
-    image: confluentinc/cp-kafka
+    image: confluentinc/cp-kafka:5.5.0
     depends_on:
-      - kafka
+      - broker
     networks:
-      - kafka
+      - fauked_kafka
     hostname: kafka-create-topics
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
-                       cub kafka-ready -b kafka:9092 1 20 && \
+                       cub kafka-ready -b broker:9092 1 20 && \
                        kafka-topics --create --topic test --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 && \
                        sleep infinity'"
     environment:
       KAFKA_BROKER_ID: ignored
       KAFKA_ZOOKEEPER_CONNECT: ignored
-networks:
-    mlflow: {}
-    kafka: {}
