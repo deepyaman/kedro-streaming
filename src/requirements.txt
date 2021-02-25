@@ -5,9 +5,10 @@ isort>=4.3.21, <5.0
 jupyter~=1.0
 jupyter_client>=5.1, < 7.0
 jupyterlab==0.31.1
-kedro==0.17.0
+kedro[pandas.CSVDataSet]==0.17.0
 nbstripout==0.3.3
 pytest-cov~=2.5
 pytest-mock>=1.7.1, <2.0
 pytest~=6.1.2
+scikit-learn==0.24.1
 wheel==0.32.2

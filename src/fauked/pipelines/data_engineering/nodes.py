@@ -29,3 +29,31 @@
 This is a boilerplate pipeline 'data_engineering'
 generated using Kedro 0.17.0
 """
+
+from typing import Any, Dict
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+
+def split_data(df: pd.DataFrame, example_test_data_ratio: float) -> Dict[str, Any]:
+    """Node for splitting the credit card fraud detection data set into training and test
+    sets, each split into features and labels.
+    The split ratio parameter is taken from conf/project/parameters.yml.
+    The data and the parameters will be loaded and provided to your function
+    automatically when the pipeline is executed and it is time to run this node.
+    """
+    x_name = df.iloc[:, 1:30].columns
+    y_name = df.iloc[:1, 30:].columns
+
+    # Split the data to features and labels
+    data_x = df[x_name]
+    data_y = df[y_name]
+
+    # Split to training and testing data
+    train_x, test_x, train_y, test_y = train_test_split(
+        data_x, data_y, test_size=example_test_data_ratio
+    )
+
+    # When returning many variables, it is a good practice to give them names:
+    return dict(train_x=train_x, train_y=train_y, test_x=test_x, test_y=test_y)

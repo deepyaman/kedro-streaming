@@ -33,6 +33,22 @@ generated using Kedro 0.17.0
 
 from kedro.pipeline import Pipeline, node
 
+from .nodes import split_data
+
 
 def create_pipeline(**kwargs):
-    return Pipeline([])
+    return Pipeline(
+        [
+            node(
+                split_data,
+                ["example_creditcard_data", "params:example_test_data_ratio"],
+                dict(
+                    train_x="example_train_x",
+                    train_y="example_train_y",
+                    test_x="example_test_x",
+                    test_y="example_test_y",
+                ),
+                name="split",
+            )
+        ]
+    )
