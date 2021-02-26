@@ -27,6 +27,7 @@
 # limitations under the License.
 
 """Project hooks."""
+import os
 from typing import Any, Dict, Iterable, Optional
 
 import mlflow
@@ -82,11 +83,12 @@ class ModelTrackingHooks:
     """Namespace for grouping all model-tracking hooks with MLflow together."""
 
     @hook_impl
-    def before_pipeline_run(self, run_params: Dict[str, Any]) -> None:
+    def before_pipeline_run(self, run_params: Dict[str, Any], catalog: DataCatalog) -> None:
         """Hook implementation to start an MLflow run
         with the same run_id as the Kedro pipeline run.
         """
-        mlflow.set_tracking_uri("http://localhost:5000")
+        os.environ["MLFLOW_S3_ENDPOINT_URL"]=catalog.load("params:MLFLOW_S3_ENDPOINT_URL")
+        mlflow.set_tracking_uri(catalog.load("params:MLFLOW_TRACKING_URI"))
         mlflow.start_run(run_name=run_params["run_id"])
         mlflow.log_params(run_params)
 
