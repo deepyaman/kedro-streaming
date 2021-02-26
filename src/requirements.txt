@@ -6,7 +6,7 @@ isort>=4.3.21, <5.0
 jupyter~=1.0
 jupyter_client>=5.1, < 7.0
 jupyterlab==0.31.1
-kedro[pandas.CSVDataSet]==0.17.0
+kedro[pandas.CSVDataSet,spark.SparkDataSet]==0.17.0
 mlflow==1.14.0
 nbstripout==0.3.3
 pytest-cov~=2.5

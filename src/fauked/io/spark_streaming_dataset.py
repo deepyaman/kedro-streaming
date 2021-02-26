@@ -303,17 +303,20 @@ class SparkStreamingDataSet(AbstractVersionedDataSet):
         return SparkSession.builder.getOrCreate()
 
     def _load(self) -> DataFrame:
-        load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
+        # load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
 
-        return self._get_spark().read.load(
-            load_path, self._file_format, **self._load_args
+        return self._get_spark().readStream.load(
+            format=self._file_format, **self._load_args
         )
 
     def _save(self, data: DataFrame) -> None:
-        save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
-        data.write.save(save_path, self._file_format, **self._save_args)
+        # save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
+        data.writeStream.format("console").outputMode("append").start().awaitTermination()
 
     def _exists(self) -> bool:
+        # TODO(deepyaman): Check that the stream exists, done for files.
+        return True
+
         load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
 
         try:
