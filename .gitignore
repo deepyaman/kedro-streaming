@@ -1,6 +1,8 @@
 ##########################
 # KEDRO PROJECT
 
+buckets/*
+*credential*
 # ignore all local configuration
 conf/local/**
 !conf/local/.gitkeep

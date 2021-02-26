@@ -5,3 +5,12 @@
 example_creditcard_data:
   type: pandas.CSVDataSet
   filepath: data/01_raw/creditcard.csv
+
+streaming_creditcard_data:
+  type: fauked.io.SparkStreamingDataSet
+  filepath: ignore
+  file_format: kafka
+  load_args:
+    kafka.bootstrap.servers: "localhost:19092"
+    subscribe: "hello-world"
+    startingOffsets: latest
