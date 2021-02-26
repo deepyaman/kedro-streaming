@@ -27,6 +27,7 @@
 # limitations under the License.
 
 """Project settings."""
+from fauked.context import ProjectContext
 from fauked.hooks import ModelTrackingHooks, ProjectHooks
 
 # Instantiate and list your project hooks here
@@ -45,7 +46,7 @@ HOOKS = (ProjectHooks(), ModelTrackingHooks())
 # }
 
 # Define custom context class. Defaults to `KedroContext`
-# CONTEXT_CLASS = KedroContext
+CONTEXT_CLASS = ProjectContext
 
 # Define the configuration folder. Defaults to `conf`
 # CONF_ROOT = "conf"
