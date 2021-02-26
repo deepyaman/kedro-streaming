@@ -54,7 +54,9 @@ class ProjectContext(KedroContext):
         """Initialises a SparkSession using the config defined in project's conf folder."""
 
         # TODO(deepyaman): Can submit args be specified in `spark.yaml`?
-        os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.2 pyspark-shell'
+        os.environ[
+            "PYSPARK_SUBMIT_ARGS"
+        ] = "--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.2 pyspark-shell"
 
         # Load the spark configuration in spark.yaml using the config loader
         parameters = self.config_loader.get("spark*", "spark*/**")

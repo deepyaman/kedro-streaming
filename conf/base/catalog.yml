@@ -12,5 +12,14 @@ streaming_creditcard_data:
   file_format: kafka
   load_args:
     kafka.bootstrap.servers: "localhost:19092"
-    subscribe: "hello-world"
+    subscribe: "hello-fraud"
     startingOffsets: latest
+
+mlflow_model:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/creditcard.csv
+
+streaming_predictions:
+  type: fauked.io.SparkStreamingDataSet
+  filepath: ignore
+  file_format: console

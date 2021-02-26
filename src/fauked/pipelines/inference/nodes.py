@@ -30,25 +30,39 @@ This is a boilerplate pipeline 'inference'
 generated using Kedro 0.17.0
 """
 
-
 import mlflow
 import mlflow.pyfunc
 import os
 
 from pyspark.sql import functions as F
-from pyspark.sql.types import ArrayType, IntegerType
+from pyspark.sql.types import ArrayType, FloatType, IntegerType, StringType, StructField, StructType
 
 
-def steaming_predict(stream_df):
-    os.environ["MLFLOW_S3_ENDPOINT_URL"] = "http://localhost:9000"
-    mlflow.set_tracking_uri("http://localhost:5000")
+def convert_bytes_to_string(df):
+    return df.selectExpr("CAST(value AS STRING)")
+
+
+def apply_json_schema(string_df):
+    # Create a schema for the df
+    schema = StructType([
+        StructField("columns", ArrayType(StringType())),
+        StructField("data", ArrayType(ArrayType(FloatType()))),
+        StructField("id", IntegerType())
+    ])
+
+    # Select the data present in the column value and apply the schema on it
+    json_df = string_df.withColumn("jsonData", F.from_json(F.col("value"), schema)).select("jsondata.*")
+    return json_df
+
+
+def streaming_predict(stream_df, mlflow_model):
+    #os.environ["MLFLOW_S3_ENDPOINT_URL"] = "http://localhost:9000"
+    #mlflow.set_tracking_uri("http://localhost:5000")
 
     model_name = "cc_model"
     model_version = 1
 
-    model = mlflow.pyfunc.load_model(
-        model_uri=f"models:/{model_name}/{model_version}"
-    )
+    model = mlflow.pyfunc.load_model(model_uri=f"models:/{model_name}/{model_version}")
 
     def _pred(data):
         return model.predict(data).tolist()

@@ -41,6 +41,7 @@ from kedro.versioning import Journal
 
 from fauked.pipelines import data_engineering as de
 from fauked.pipelines import data_science as ds
+from fauked.pipelines import inference
 
 
 class ProjectHooks:
@@ -54,10 +55,12 @@ class ProjectHooks:
         """
         data_engineering_pipeline = de.create_pipeline()
         data_science_pipeline = ds.create_pipeline()
+        inference_pipeline = inference.create_pipeline()
 
         return {
             "de": data_engineering_pipeline,
             "ds": data_science_pipeline,
+            "inference": inference_pipeline,
             "__default__": data_engineering_pipeline + data_science_pipeline,
         }
 
@@ -83,11 +86,15 @@ class ModelTrackingHooks:
     """Namespace for grouping all model-tracking hooks with MLflow together."""
 
     @hook_impl
-    def before_pipeline_run(self, run_params: Dict[str, Any], catalog: DataCatalog) -> None:
+    def before_pipeline_run(
+        self, run_params: Dict[str, Any], catalog: DataCatalog
+    ) -> None:
         """Hook implementation to start an MLflow run
         with the same run_id as the Kedro pipeline run.
         """
-        os.environ["MLFLOW_S3_ENDPOINT_URL"]=catalog.load("params:MLFLOW_S3_ENDPOINT_URL")
+        os.environ["MLFLOW_S3_ENDPOINT_URL"] = catalog.load(
+            "params:MLFLOW_S3_ENDPOINT_URL"
+        )
         mlflow.set_tracking_uri(catalog.load("params:MLFLOW_TRACKING_URI"))
         mlflow.start_run(run_name=run_params["run_id"])
         mlflow.log_params(run_params)

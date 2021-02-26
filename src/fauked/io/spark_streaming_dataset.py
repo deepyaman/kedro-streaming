@@ -311,7 +311,9 @@ class SparkStreamingDataSet(AbstractVersionedDataSet):
 
     def _save(self, data: DataFrame) -> None:
         # save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
-        data.writeStream.format("console").outputMode("append").start().awaitTermination()
+        data.writeStream.format("console").outputMode(
+            "append"
+        ).start().awaitTermination()
 
     def _exists(self) -> bool:
         # TODO(deepyaman): Check that the stream exists, done for files.
