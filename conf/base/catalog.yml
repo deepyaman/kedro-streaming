@@ -23,3 +23,13 @@ streaming_predictions:
   type: fauked.io.SparkStreamingDataSet
   filepath: ignore
   file_format: console
+
+# streaming_predictions:
+#   type: fauked.io.SparkStreamingDataSet
+#   filepath: ignore
+#   file_format: kafka
+#   save_args:
+#     output_mode: append
+#     kafka.bootstrap.servers: "localhost:19092"
+#     topic: "hello-predictions"
+#     checkpointLocation: checkpoints
