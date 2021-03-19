@@ -37,11 +37,10 @@ from typing import Any, Dict, List, Optional, Tuple
 from warnings import warn
 
 from hdfs import HdfsError, InsecureClient
+from kedro.io.core import AbstractVersionedDataSet, Version
 from pyspark.sql import DataFrame, SparkSession  # pylint: disable=import-error
 from pyspark.sql.utils import AnalysisException  # pylint: disable=import-error
 from s3fs import S3FileSystem
-
-from kedro.io.core import AbstractVersionedDataSet, Version
 
 
 def _parse_glob_pattern(pattern: str) -> str:

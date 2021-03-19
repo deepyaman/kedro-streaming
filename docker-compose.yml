@@ -4,35 +4,49 @@ services:
     image: minio/minio
     container_name: s3
     volumes:
-        - ./buckets:/data:consistent
+      - ./buckets:/data:consistent
     expose:
-        - "9000"
+      - "9000"
     ports:
-        - "9000:9000"
+      - "9000:9000"
     environment:
-        - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-        - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
     command: minio server /data
     networks:
-        - mlflow
+      - mlflow
     healthcheck:
-        test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-        interval: 30s
-        timeout: 20s
-        retries: 3
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - s3
+    networks:
+      - mlflow
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add myminio http://s3:9000 ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY};
+      /usr/bin/mc rm -r --force myminio/mlflow;
+      /usr/bin/mc mb myminio/mlflow;
+      /usr/bin/mc policy download myminio/mlflow;
+      exit 0;
+      "
   db:
     image: mysql
     container_name: db
     command: --innodb_use_native_aio=0
     networks:
-        - mlflow
+      - mlflow
     ports:
       - "3306:3306"
     environment:
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     # volumes:
     #     - ./dbdata:/var/lib/mysql
   mlflow:
@@ -41,23 +55,23 @@ services:
     image: mlflow_server
     container_name: mlflow_server
     ports:
-        - "5000:5000"
+      - "5000:5000"
     networks:
-        - mlflow
+      - mlflow
     environment:
-        - MLFLOW_S3_ENDPOINT_URL=http://s3:9000
-        - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
-        - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_KEY}
+      - MLFLOW_S3_ENDPOINT_URL=http://s3:9000
+      - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_KEY}
     command: mlflow server --backend-store-uri mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE} --default-artifact-root s3://mlflow/ --host 0.0.0.0
     depends_on:
-        - db
+      - db
 
   zookeeper:
     image: confluentinc/cp-zookeeper
     hostname: zookeeper
     container_name: zookeeper
     ports:
-      - '2181:2181'
+      - "2181:2181"
     networks:
       - kafka
     environment:
@@ -71,7 +85,7 @@ services:
     networks:
       - kafka
     ports:
-      - '19092:19092'
+      - "19092:19092"
     depends_on:
       - zookeeper
     environment:
@@ -84,5 +98,5 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka
 
 networks:
-    mlflow: {}
-    kafka: {}
+  mlflow: {}
+  kafka: {}
