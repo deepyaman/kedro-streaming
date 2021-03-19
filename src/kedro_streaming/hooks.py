@@ -41,7 +41,7 @@ from kedro.pipeline import Pipeline
 from kedro.pipeline.node import Node
 from kedro.versioning import Journal
 
-from kedro_streaming.io.mlflow_dataset import MLFlowDataSet
+from kedro_streaming.io import MLFlowDataSet
 from kedro_streaming.pipelines import data_engineering as de
 from kedro_streaming.pipelines import data_science as ds
 from kedro_streaming.pipelines import inference
