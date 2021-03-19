@@ -41,10 +41,10 @@ architecture.
     docker build -t mlflow_server:latest -f Dockerfile.mlflow .
     ```
 
-3. Start the multi-container application.
+3. Start the multi-container application in detached mode.
 
     ```bash
-    docker-compose up
+    docker-compose up -d
     ```
 
     **Services**
