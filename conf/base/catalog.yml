@@ -7,12 +7,12 @@ example_creditcard_data:
   filepath: data/01_raw/creditcard.csv
 
 streaming_creditcard_data:
-  type: fauked.io.SparkStreamingDataSet
+  type: kedro_streaming.io.SparkStreamingDataSet
   filepath: ignore
   file_format: kafka
   load_args:
     kafka.bootstrap.servers: "localhost:19092"
-    subscribe: "hello-fraud"
+    subscribe: "hello-fraudster"
     startingOffsets: latest
 
 mlflow_model:
@@ -20,12 +20,12 @@ mlflow_model:
   filepath: data/01_raw/creditcard.csv
 
 streaming_predictions:
-  type: fauked.io.SparkStreamingDataSet
+  type: kedro_streaming.io.SparkStreamingDataSet
   filepath: ignore
   file_format: console
 
 # streaming_predictions:
-#   type: fauked.io.SparkStreamingDataSet
+#   type: kedro_streaming.io.SparkStreamingDataSet
 #   filepath: ignore
 #   file_format: kafka
 #   save_args:
