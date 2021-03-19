@@ -67,7 +67,7 @@ architecture.
     kedro run --pipeline train
     ```
 
-6. Run the Kedro pipeline for spinning up the inference engine, which will do predictions on data, as it comes in.
+6. Run the Kedro pipeline for spinning up the inference engine, which will do predictions on data as it comes in.
    The `SparkStreamingDataSet` is defined to read from the `hello-fraud` Kafka topic. The pipeline is currently configured
    to print to the console, but various other
    [sinks](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#output-sinks) can be defined.
@@ -76,6 +76,8 @@ architecture.
     kedro run --pipeline inference
     ```
 
-7. Now that you have the inference engine up, to test it, we need to produce some messages for the inference pipeline to
-   consume in real-time. [notebooks/message_sender.ipynb](./notebooks/message_sender.ipynb) contains a sample of how
-   messages can be produced, and sent to the defined `hello-fraud` Kafka topic.
+7. Now that you have the inference engine up, we need to produce some messages for the inference pipeline to
+   consume in real time to test it. [`notebooks/message_sender.ipynb`](./notebooks/message_sender.ipynb) contains a sample of how
+   messages can be produced and sent to the defined `hello-fraud` Kafka topic.
+
+   Upon executing the notebook, you should see the predictions in the console where you ran `docker-compose up`.
