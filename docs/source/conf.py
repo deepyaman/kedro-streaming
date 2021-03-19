@@ -29,7 +29,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# fauked documentation build
+# kedro_streaming documentation build
 # configuration file, created by sphinx-quickstart.
 #
 # This file is execfile()d with the current directory set to its
@@ -50,11 +50,11 @@ import re
 from kedro.framework.cli.utils import find_stylesheets
 from recommonmark.transform import AutoStructify
 
-from fauked import __version__ as release
+from kedro_streaming import __version__ as release
 
 # -- Project information -----------------------------------------------------
 
-project = "fauked"
+project = "kedro_streaming"
 copyright = "2020, QuantumBlack Visual Analytics Limited"
 author = "QuantumBlack"
 
@@ -149,7 +149,7 @@ html_show_sourcelink = False
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "faukeddoc"
+htmlhelp_basename = "kedro_streamingdoc"
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -177,8 +177,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "fauked.tex",
-        "fauked Documentation",
+        "kedro_streaming.tex",
+        "kedro_streaming Documentation",
         "QuantumBlack",
         "manual",
     )
@@ -191,8 +191,8 @@ latex_documents = [
 man_pages = [
     (
         master_doc,
-        "fauked",
-        "fauked Documentation",
+        "kedro_streaming",
+        "kedro_streaming Documentation",
         [author],
         1,
     )
@@ -206,11 +206,11 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        "fauked",
-        "fauked Documentation",
+        "kedro_streaming",
+        "kedro_streaming Documentation",
         author,
-        "fauked",
-        "Project fauked codebase.",
+        "kedro_streaming",
+        "Project kedro_streaming codebase.",
         "Data-Science",
     )
 ]

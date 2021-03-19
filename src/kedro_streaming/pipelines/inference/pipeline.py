@@ -26,27 +26,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Project settings."""
-from fauked.context import ProjectContext
-from fauked.hooks import ModelTrackingHooks, ProjectHooks
+"""
+This is a boilerplate pipeline 'inference'
+generated using Kedro 0.17.0
+"""
 
-# Instantiate and list your project hooks here
-HOOKS = (ProjectHooks(), ModelTrackingHooks())
+from kedro.pipeline import Pipeline, node
 
-# List the installed plugins for which to disable auto-registry
-# DISABLE_HOOKS_FOR_PLUGINS = ("kedro-viz",)
+from .nodes import apply_json_schema, convert_bytes_to_string, streaming_predict
 
-# Define where to store data from a KedroSession. Defaults to BaseSessionStore.
-# from kedro.framework.session.store import ShelveStore
-# SESSION_STORE_CLASS = ShelveStore
 
-# Define keyword arguments to be passed to `SESSION_STORE_CLASS` constructor
-# SESSION_STORE_ARGS = {
-#     "path": "./sessions"
-# }
-
-# Define custom context class. Defaults to `KedroContext`
-CONTEXT_CLASS = ProjectContext
-
-# Define the configuration folder. Defaults to `conf`
-# CONF_ROOT = "conf"
+def create_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                convert_bytes_to_string,
+                "streaming_creditcard_data",
+                "streaming_string_data",
+                name="to_string",
+            ),
+            node(
+                apply_json_schema,
+                "streaming_string_data",
+                "streaming_json_data",
+                name="to_json",
+            ),
+            node(
+                streaming_predict,
+                ["streaming_json_data", "example_model"],
+                "streaming_predictions",
+                name="predict",
+            ),
+        ]
+    )

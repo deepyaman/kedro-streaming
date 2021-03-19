@@ -41,10 +41,10 @@ architecture.
     docker build -t mlflow_server:latest -f Dockerfile.mlflow .
     ```
 
-3. Start the multi-container application.
+3. Start the multi-container application in detached mode.
 
     ```bash
-    docker-compose up
+    docker-compose up -d
     ```
 
     **Services**
@@ -55,7 +55,7 @@ architecture.
     | MLflow     | localhost | 5000  |
     | Minio (S3) | localhost | 9000  |
 
-4. In a new shell, create a conda environment, activate it, and install all Python dependencies.
+4. Create a new conda environment, activate it, and install all Python dependencies.
 
     ```bash
     conda create -n kedro-streaming python=3.7 && conda activate kedro-streaming && pip install -e src/
@@ -68,7 +68,7 @@ architecture.
     ```
 
 6. Run the Kedro pipeline for spinning up the inference engine, which will do predictions on data as it comes in.
-   The `SparkStreamingDataSet` is defined to read from the `hello-fraud` Kafka topic. The pipeline is currently configured
+   The `SparkStreamingDataSet` is defined to read from the `hello-fraudster` Kafka topic. The pipeline is currently configured
    to print to the console, but various other
    [sinks](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#output-sinks) can be defined.
 
@@ -78,6 +78,6 @@ architecture.
 
 7. Now that you have the inference engine up, we need to produce some messages for the inference pipeline to
    consume in real time to test it. [`notebooks/message_sender.ipynb`](./notebooks/message_sender.ipynb) contains a sample of how
-   messages can be produced and sent to the defined `hello-fraud` Kafka topic.
+   messages can be produced and sent to the defined `hello-fraudster` Kafka topic.
 
-   Upon executing the notebook, you should see the predictions in the console where you ran `docker-compose up`.
+   Upon executing the notebook, you should see the predictions in the console where you ran the inference pipeline.

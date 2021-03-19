@@ -7,26 +7,26 @@ example_creditcard_data:
   filepath: data/01_raw/creditcard.parquet
 
 streaming_creditcard_data:
-  type: fauked.io.SparkStreamingDataSet
+  type: kedro_streaming.io.SparkStreamingDataSet
   filepath: ignore
   file_format: kafka
   load_args:
     kafka.bootstrap.servers: "localhost:19092"
-    subscribe: "hello-fraud"
+    subscribe: "hello-fraudster"
     startingOffsets: latest
 
-fauked_regressor:
-  type: fauked.io.mlflow_dataset.MLFlowDataSet
+example_model:
+  type: kedro_streaming.io.MLFlowDataSet
   tracking_uri: http://localhost:5000
-  experiment_name: fauked
-  model_name: fauked_regressor
+  experiment_name: example
+  model_name: example_regressor
 
 streaming_predictions:
-  type: fauked.io.SparkStreamingDataSet
+  type: kedro_streaming.io.SparkStreamingDataSet
   filepath: ignore
   file_format: console
 # streaming_predictions:
-#   type: fauked.io.SparkStreamingDataSet
+#   type: kedro_streaming.io.SparkStreamingDataSet
 #   filepath: ignore
 #   file_format: kafka
 #   save_args:

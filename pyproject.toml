@@ -1,6 +1,6 @@
 [tool.kedro]
-package_name = "fauked"
-project_name = "fauked"
+package_name = "kedro_streaming"
+project_name = "Kedro-Streaming"
 project_version = "0.17.0"
 
 [tool.isort]
@@ -14,4 +14,4 @@ known_third_party = "kedro"
 [tool.pytest.ini_options]
 addopts = """
 --cov-report term-missing \
---cov src/fauked -ra"""
+--cov src/kedro_streaming -ra"""

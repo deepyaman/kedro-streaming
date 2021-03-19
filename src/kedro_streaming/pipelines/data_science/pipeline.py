@@ -27,35 +27,35 @@
 # limitations under the License.
 
 """
-This is a boilerplate pipeline 'inference'
+This is a boilerplate pipeline 'data_science'
 generated using Kedro 0.17.0
 """
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import apply_json_schema, convert_bytes_to_string, streaming_predict
+from .nodes import predict, report_accuracy, train_model
 
 
 def create_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                convert_bytes_to_string,
-                "streaming_creditcard_data",
-                "streaming_string_data",
-                name="to_string",
+                train_model,
+                ["example_train_x", "example_train_y", "parameters"],
+                "example_model",
+                name="train",
             ),
             node(
-                apply_json_schema,
-                "streaming_string_data",
-                "streaming_json_data",
-                name="to_json",
-            ),
-            node(
-                streaming_predict,
-                ["streaming_json_data", "fauked_regressor"],
-                "streaming_predictions",
+                predict,
+                dict(model="example_model", test_x="example_test_x"),
+                "example_predictions",
                 name="predict",
+            ),
+            node(
+                report_accuracy,
+                ["example_predictions", "example_test_y"],
+                None,
+                name="report",
             ),
         ]
     )

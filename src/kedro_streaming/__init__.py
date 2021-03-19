@@ -25,37 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-This is a boilerplate pipeline 'data_science'
-generated using Kedro 0.17.0
+"""Kedro-Streaming
 """
 
-from kedro.pipeline import Pipeline, node
-
-from .nodes import predict, report_accuracy, train_model
-
-
-def create_pipeline(**kwargs):
-    return Pipeline(
-        [
-            node(
-                train_model,
-                ["example_train_x", "example_train_y", "parameters"],
-                "fauked_regressor",
-                name="train",
-            ),
-            node(
-                predict,
-                dict(model="fauked_regressor", test_x="example_test_x"),
-                "example_predictions",
-                name="predict",
-            ),
-            node(
-                report_accuracy,
-                ["example_predictions", "example_test_y"],
-                None,
-                name="report",
-            ),
-        ]
-    )
+__version__ = "0.1"

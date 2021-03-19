@@ -1,8 +1,8 @@
-.. fauked documentation master file, created by sphinx-quickstart.
+.. kedro_streaming documentation master file, created by sphinx-quickstart.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to project fauked's API docs!
+Welcome to project kedro_streaming's API docs!
 =============================================
 
 .. toctree::
