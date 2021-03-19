@@ -55,7 +55,7 @@ architecture.
     | MLflow     | localhost | 5000  |
     | Minio (S3) | localhost | 9000  |
 
-4. Create a new Conda Environment, and install all Python dependencies.
+4. In a new shell, create a conda environment, activate it, and install all Python dependencies.
 
     ```bash
     conda create -n kedro-streaming python=3.7 && conda activate kedro-streaming && pip install -e src/
