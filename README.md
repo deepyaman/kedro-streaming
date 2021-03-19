@@ -69,7 +69,7 @@ architecture.
 
 6. Run the Kedro pipeline for spinning up the inference engine, which will do predictions on data, as it comes in.
    The `SparkStreamingDataSet` is defined to read from the `hello-fraud` Kafka topic. The pipeline is currently configured
-   to print to the console. But various other
+   to print to the console, but various other
    [sinks](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#output-sinks) can be defined.
 
     ```bash
