@@ -1,6 +1,6 @@
 # Pipeline data_science
 
-> *Note:* This is a `README.md` boilerplate generated using `Kedro 0.17.0`.
+> _Note:_ This is a `README.md` boilerplate generated using `Kedro 0.17.0`.
 
 ## Overview
 
