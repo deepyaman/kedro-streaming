@@ -42,12 +42,12 @@ def create_pipeline(**kwargs):
             node(
                 train_model,
                 ["example_train_x", "example_train_y", "parameters"],
-                "fauked_regressor",
+                "example_model",
                 name="train",
             ),
             node(
                 predict,
-                dict(model="fauked_regressor", test_x="example_test_x"),
+                dict(model="example_model", test_x="example_test_x"),
                 "example_predictions",
                 name="predict",
             ),

@@ -53,7 +53,7 @@ def create_pipeline(**kwargs):
             ),
             node(
                 streaming_predict,
-                ["streaming_json_data", "fauked_regressor"],
+                ["streaming_json_data", "example_model"],
                 "streaming_predictions",
                 name="predict",
             ),
