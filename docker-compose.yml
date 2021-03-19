@@ -31,7 +31,7 @@ services:
       /usr/bin/mc config host add myminio http://s3:9000 ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY};
       /usr/bin/mc rm -r --force myminio/mlflow;
       /usr/bin/mc mb myminio/mlflow;
-      /usr/bin/mc policy download myminio/mlflow;
+      /usr/bin/mc policy set download myminio/mlflow;
       exit 0;
       "
   db:
