@@ -28,10 +28,12 @@
 
 """Project hooks."""
 import os
+from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
 
 import mlflow
 import mlflow.sklearn
+from dotenv import load_dotenv
 from kedro.config import ConfigLoader
 from kedro.framework.hooks import hook_impl
 from kedro.io import DataCatalog
@@ -39,6 +41,7 @@ from kedro.pipeline import Pipeline
 from kedro.pipeline.node import Node
 from kedro.versioning import Journal
 
+from kedro_streaming.io.mlflow_dataset import MLFlowDataSet
 from kedro_streaming.pipelines import data_engineering as de
 from kedro_streaming.pipelines import data_science as ds
 from kedro_streaming.pipelines import inference
@@ -61,6 +64,7 @@ class ProjectHooks:
             "de": data_engineering_pipeline,
             "ds": data_science_pipeline,
             "inference": inference_pipeline,
+            "train": data_engineering_pipeline + data_science_pipeline,
             "__default__": data_engineering_pipeline + data_science_pipeline,
         }
 
@@ -80,6 +84,15 @@ class ProjectHooks:
         return DataCatalog.from_config(
             catalog, credentials, load_versions, save_version, journal
         )
+
+    @hook_impl
+    def before_pipeline_run(self, run_params, pipeline, catalog):
+        MLFlowDataSet._kedro_run_params = run_params
+        MLFlowDataSet._kedro_pipeline = pipeline
+        MLFlowDataSet._kedro_catalog = catalog
+        env_filepath = Path(__file__).resolve().parent.parent.parent / ".env"
+        if env_filepath.is_file():
+            load_dotenv(dotenv_path=env_filepath)
 
 
 class ModelTrackingHooks:
@@ -113,11 +126,6 @@ class ModelTrackingHooks:
             mlflow.log_params(
                 {"split_data_ratio": inputs["params:example_test_data_ratio"]}
             )
-
-        elif node._func_name == "train_model":
-            model = outputs["example_model"]
-            mlflow.sklearn.log_model(model, "model")
-            mlflow.log_params(inputs["parameters"])
 
     @hook_impl
     def after_pipeline_run(self) -> None:

@@ -27,10 +27,10 @@
 # limitations under the License.
 
 """Entry point for running a Kedro pipeline as a Python package."""
+import os
 from pathlib import Path
 from typing import Any, Dict, Union
 
-import os
 from kedro.framework.context import KedroContext
 from pyspark import SparkConf
 from pyspark.sql import SparkSession

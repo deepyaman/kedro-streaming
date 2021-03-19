@@ -33,19 +33,29 @@ generated using Kedro 0.17.0
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import streaming_predict, convert_bytes_to_string, apply_json_schema
+from .nodes import apply_json_schema, convert_bytes_to_string, streaming_predict
 
 
 def create_pipeline(**kwargs):
     return Pipeline(
         [
-            node(convert_bytes_to_string, "streaming_creditcard_data", "streaming_string_data", name="to_string"),
-            node(apply_json_schema, "streaming_string_data", "streaming_json_data", name="to_json"),
+            node(
+                convert_bytes_to_string,
+                "streaming_creditcard_data",
+                "streaming_string_data",
+                name="to_string",
+            ),
+            node(
+                apply_json_schema,
+                "streaming_string_data",
+                "streaming_json_data",
+                name="to_json",
+            ),
             node(
                 streaming_predict,
-                ["streaming_json_data", "mlflow_model"],
+                ["streaming_json_data", "fauked_regressor"],
                 "streaming_predictions",
                 name="predict",
-            )
+            ),
         ]
     )
