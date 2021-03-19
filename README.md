@@ -30,51 +30,51 @@ architecture.
 
 1. Clone this repository, and change the current directory to the root of the repository.
 
-```bash
-git clone https://github.com/deepyaman/kedro-streaming.git
-cd kedro-streaming
-```
+    ```bash
+    git clone https://github.com/deepyaman/kedro-streaming.git
+    cd kedro-streaming
+    ```
 
 2. Build the `mlflow_server` Docker image.
 
-```bash
-docker build -t mlflow_server:latest -f Dockerfile.mlflow .
-```
+    ```bash
+    docker build -t mlflow_server:latest -f Dockerfile.mlflow .
+    ```
 
 3. Start the multi-container application.
 
-```bash
-docker-compose up
-```
+    ```bash
+    docker-compose up
+    ```
 
-**Services**
+    **Services**
 
-| Service    | Host      | Port  |
-| ---------- | --------- | ----- |
-| Kafka      | localhost | 19092 |
-| MLflow     | localhost | 5000  |
-| Minio (S3) | localhost | 9000  |
+    | Service    | Host      | Port  |
+    | ---------- | --------- | ----- |
+    | Kafka      | localhost | 19092 |
+    | MLflow     | localhost | 5000  |
+    | Minio (S3) | localhost | 9000  |
 
 4. Create a new Conda Environment, and install all Python dependencies.
 
-```bash
-conda create -n kedro-streaming python=3.7 && conda activate kedro-streaming && pip install -e src/
-```
+    ```bash
+    conda create -n kedro-streaming python=3.7 && conda activate kedro-streaming && pip install -e src/
+    ```
 
 5. Run the Kedro pipeline to train the model, and publish the model to the MLflow Model Registry.
 
-```bash
-kedro run --pipeline train
-```
+    ```bash
+    kedro run --pipeline train
+    ```
 
 6. Run the Kedro pipeline for spinning up the inference engine, which will do predictions on data, as it comes in.
    The `SparkStreamingDataSet` is defined to read from the `hello-fraud` Kafka topic. The pipeline is currently configured
    to print to the console. But various other
    [sinks](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#output-sinks) can be defined.
 
-```bash
-kedro run --pipeline inference
-```
+    ```bash
+    kedro run --pipeline inference
+    ```
 
 7. Now that you have the inference engine up, to test it, we need to produce some messages for the inference pipeline to
    consume in real-time. [notebooks/message_sender.ipynb](./notebooks/message_sender.ipynb) contains a sample of how
