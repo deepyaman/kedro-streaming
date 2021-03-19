@@ -188,20 +188,20 @@ class SparkStreamingDataSet(AbstractVersionedDataSet):
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
-        filepath: str,
+        filepath: str = "",
         file_format: str = "parquet",
         load_args: Dict[str, Any] = None,
         save_args: Dict[str, Any] = None,
         version: Version = None,
         credentials: Dict[str, Any] = None,
     ) -> None:
-        """Creates a new instance of ``SparkDataSet``.
+        """Creates a new instance of ``SparkStreamingDataSet``.
 
         Args:
             filepath: Filepath in POSIX format to a Spark dataframe. When using Databricks
                 and working with data written to mount path points,
                 specify ``filepath``s for (versioned) ``SparkDataSet``s
-                starting with ``/dbfs/mnt``.
+                starting with ``/dbfs/mnt``. Required for file sources/sinks.
             file_format: File format used during load and save
                 operations. These are formats supported by the running
                 SparkContext include parquet, csv. For a list of supported
@@ -310,9 +310,9 @@ class SparkStreamingDataSet(AbstractVersionedDataSet):
 
     def _save(self, data: DataFrame) -> None:
         # save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
-        data.writeStream.format("console").outputMode(
-            "append"
-        ).start().awaitTermination()
+        data.writeStream.start(
+            format=self._file_format, **self._save_args
+        ).awaitTermination()
 
     def _exists(self) -> bool:
         # TODO(deepyaman): Check that the stream exists, done for files.

@@ -8,7 +8,6 @@ example_creditcard_data:
 
 streaming_creditcard_data:
   type: kedro_streaming.io.SparkStreamingDataSet
-  filepath: ignore
   file_format: kafka
   load_args:
     kafka.bootstrap.servers: "localhost:19092"
@@ -23,11 +22,9 @@ example_model:
 
 streaming_predictions:
   type: kedro_streaming.io.SparkStreamingDataSet
-  filepath: ignore
   file_format: console
 # streaming_predictions:
 #   type: kedro_streaming.io.SparkStreamingDataSet
-#   filepath: ignore
 #   file_format: kafka
 #   save_args:
 #     output_mode: append
